@@ -24,7 +24,7 @@ export default function AddToDeckModal({ card, onClose }: AddToDeckModalProps) {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
             <div className="bg-slate-900 border border-slate-700 w-full max-w-sm rounded-xl p-6 shadow-2xl space-y-4">
                 <div className="flex justify-between items-center">
-                    <h3 className="font-bold text-lg">Add to Deck</h3>
+                    <h3 className="font-bold text-lg">Añadir al Mazo</h3>
                     <button onClick={onClose} className="text-slate-400 hover:text-white">
                         <X size={20} />
                     </button>
@@ -41,10 +41,10 @@ export default function AddToDeckModal({ card, onClose }: AddToDeckModalProps) {
                 </div>
 
                 <div className="space-y-2">
-                    <label className="text-sm font-medium text-slate-300">Select Deck</label>
+                    <label className="text-sm font-medium text-slate-300">Seleccionar Mazo</label>
                     {decks.length === 0 ? (
                         <div className="text-sm text-yellow-500 py-2">
-                            No decks created. Please create a deck from the Decks tab first.
+                            No tienes mazos creados. Crea uno en la pestaña Mazos primero.
                         </div>
                     ) : (
                         <div className="grid gap-2 max-h-48 overflow-y-auto">
@@ -58,7 +58,7 @@ export default function AddToDeckModal({ card, onClose }: AddToDeckModalProps) {
                                         }`}
                                 >
                                     <div className="font-medium">{deck.name}</div>
-                                    <div className="text-xs opacity-80">{deck.cards.reduce((a, c) => a + c.quantity, 0)} cards</div>
+                                    <div className="text-xs opacity-80">{deck.cards.reduce((a, c) => a + c.quantity, 0)} cartas</div>
                                 </button>
                             ))}
                         </div>
@@ -66,7 +66,7 @@ export default function AddToDeckModal({ card, onClose }: AddToDeckModalProps) {
                 </div>
 
                 <div className="space-y-2">
-                    <label className="text-sm font-medium text-slate-300">Quantity</label>
+                    <label className="text-sm font-medium text-slate-300">Cantidad</label>
                     <div className="flex items-center gap-4 bg-slate-800 p-2 rounded-lg border border-slate-700 w-fit">
                         <button
                             onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -89,7 +89,7 @@ export default function AddToDeckModal({ card, onClose }: AddToDeckModalProps) {
                     disabled={!selectedDeckId}
                     className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    Add {quantity} Card{quantity > 1 ? 's' : ''}
+                    Añadir {quantity} Carta{quantity > 1 ? 's' : ''}
                 </button>
             </div>
         </div>

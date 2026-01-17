@@ -44,7 +44,7 @@ export default function CardDetailModal({ card, onClose }: CardDetailModalProps)
 
                     <div className="space-y-4 text-slate-300">
                         <div className="flex justify-between border-b border-slate-700 pb-2">
-                            <span className="text-slate-500">Edition</span>
+                            <span className="text-slate-500">Edición</span>
                             <span className="font-medium flex items-center gap-2">
                                 {card.set_name}
                                 <span className="text-xs bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700 font-mono">
@@ -54,17 +54,17 @@ export default function CardDetailModal({ card, onClose }: CardDetailModalProps)
                         </div>
 
                         <div className="flex justify-between border-b border-slate-700 pb-2">
-                            <span className="text-slate-500">Type</span>
+                            <span className="text-slate-500">Tipo</span>
                             <span>{card.type_line}</span>
                         </div>
 
                         <div className="flex justify-between border-b border-slate-700 pb-2">
-                            <span className="text-slate-500">Mana Value</span>
+                            <span className="text-slate-500">Coste de Maná</span>
                             <span>{card.cmc} ({card.mana_cost || "-"})</span>
                         </div>
 
                         <div className="pt-2">
-                            <div className="text-sm text-slate-500 mb-2 uppercase tracking-wider font-bold">Prices</div>
+                            <div className="text-sm text-slate-500 mb-2 uppercase tracking-wider font-bold">Precios</div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="bg-slate-950/50 p-3 rounded border border-slate-800 text-center">
                                     <div className="text-xs text-green-500 font-bold mb-1">NORMAL</div>

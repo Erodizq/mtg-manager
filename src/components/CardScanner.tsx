@@ -49,7 +49,7 @@ export default function CardScanner() {
             }
         } catch (err) {
             console.error("Error accessing camera:", err);
-            alert("Could not access camera. Please allow permissions.");
+            alert("No se pudo acceder a la cámara. Por favor permite el acceso.");
         }
     };
 
@@ -69,7 +69,7 @@ export default function CardScanner() {
             // Safety & Readiness check
             if (video.readyState !== 4 || video.videoWidth === 0 || video.videoHeight === 0) {
                 console.warn("Camera not ready. State:", video.readyState, "Dim:", video.videoWidth, video.videoHeight);
-                setStatusMessage("Camera stabilizing... wait a moment.");
+                setStatusMessage("Estabilizando cámara... un momento.");
                 return;
             }
 
@@ -105,12 +105,12 @@ export default function CardScanner() {
                         processImage(processedImageUrl);
                     } else {
                         console.error("Canvas export failed");
-                        setStatusMessage("Image export failed. Try again.");
+                        setStatusMessage("Fallo al exportar imagen. Intenta de nuevo.");
                     }
                 }
             } catch (error) {
                 console.error("Capture error:", error);
-                setStatusMessage("Camera capture failed. Try again.");
+                setStatusMessage("Fallo al capturar. Intenta de nuevo.");
                 setIsProcessing(false);
             }
         }
@@ -198,13 +198,13 @@ export default function CardScanner() {
             const results = await searchCard(query);
             setFoundCards(results);
             if (results.length === 0) {
-                setStatusMessage("No cards found. Check spelling below.");
+                setStatusMessage("No se encontraron cartas. Revisa el nombre abajo.");
             } else {
                 setStatusMessage(""); // Clear message on success
             }
         } catch (e: any) {
             console.error("Search failed details:", e);
-            setStatusMessage(`Search failed: ${e.message || "Unknown error"}`);
+            setStatusMessage(`Búsqueda fallida: ${e.message || "Error desconocido"}`);
         } finally {
             setIsProcessing(false);
         }
@@ -225,12 +225,12 @@ export default function CardScanner() {
                         {!isStreamActive && (
                             <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-400">
                                 <Camera size={48} className="mb-2" />
-                                <p>Camera inactive</p>
+                                <p>Cámara inactiva</p>
                                 <button
                                     onClick={startCamera}
                                     className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-full font-medium"
                                 >
-                                    Start Camera
+                                    Iniciar Cámara
                                 </button>
                             </div>
                         )}
@@ -247,7 +247,7 @@ export default function CardScanner() {
                         {/* Title Target Box (Top 20%) */}
                         <div className="absolute top-[5%] left-[5%] right-[5%] h-[18%] border-2 border-green-500/80 rounded-lg bg-green-500/10 shadow-[0_0_15px_rgba(34,197,94,0.3)]">
                             <div className="absolute -bottom-6 w-full text-center text-xs font-bold text-green-400 tracking-wider uppercase drop-shadow-md">
-                                ALIGN TITLE HERE
+                                ALINEAR TÍTULO AQUÍ
                             </div>
                         </div>
 
@@ -281,7 +281,7 @@ export default function CardScanner() {
                         className="flex items-center gap-2 px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600"
                     >
                         <RefreshCw size={20} />
-                        Retake
+                        Reintentar
                     </button>
                 )}
             </div>
@@ -300,7 +300,7 @@ export default function CardScanner() {
                     )}
 
                     {/* Status Message */}
-                    {statusMessage || "Processing..."}
+                    {statusMessage || "Procesando..."}
                 </div>
             )}
 
@@ -311,7 +311,7 @@ export default function CardScanner() {
                             type="text"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            placeholder="Card name manually..."
+                            placeholder="Nombre manual..."
                             className="w-full bg-slate-800 border border-slate-700 rounded-lg py-3 px-4 pl-10 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter') performSearch(searchQuery);
@@ -323,7 +323,7 @@ export default function CardScanner() {
                         onClick={() => performSearch(searchQuery)}
                         className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-medium transition-colors"
                     >
-                        Search
+                        Buscar
                     </button>
                 </div>
             </div>
@@ -331,7 +331,7 @@ export default function CardScanner() {
             {foundCards.length > 0 && (
                 <div className="w-full space-y-4">
                     <h3 className="text-lg font-bold text-slate-200 flex justify-between items-center">
-                        <span>Found Cards ({foundCards.length})</span>
+                        <span>Cartas Encontradas ({foundCards.length})</span>
                     </h3>
                     <div className="grid gap-3 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
                         {foundCards.map(card => (
@@ -351,11 +351,11 @@ export default function CardScanner() {
                                     <button
                                         onClick={() => {
                                             addToCollection(card);
-                                            alert(`Added ${card.name} to collection!`);
+                                            alert(`¡${card.name} añadida a la colección!`);
                                         }}
                                         className="mt-2 text-xs bg-blue-600/50 hover:bg-blue-600 text-blue-100 px-3 py-1.5 rounded transition-colors w-full"
                                     >
-                                        + Add to Collection
+                                        + Añadir a Colección
                                     </button>
                                 </div>
                             </div>

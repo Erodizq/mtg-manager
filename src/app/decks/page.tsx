@@ -18,20 +18,20 @@ export default function DecksPage() {
         setIsCreating(false);
     };
 
-    if (!isLoaded) return <div className="p-8 text-center text-slate-500">Loading decks...</div>;
+    if (!isLoaded) return <div className="p-8 text-center text-slate-500">Cargando mazos...</div>;
 
     return (
         <div className="min-h-screen pt-4 md:pt-24 px-4 pb-24">
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
-                    Decks
+                    Mazos
                 </h1>
                 <button
                     onClick={() => setIsCreating(true)}
                     className="btn-primary flex items-center gap-2"
                 >
                     <Plus size={20} />
-                    New Deck
+                    Nuevo Mazo
                 </button>
             </div>
 
@@ -40,21 +40,21 @@ export default function DecksPage() {
                     <form onSubmit={handleCreate} className="flex gap-4">
                         <input
                             type="text"
-                            placeholder="Deck Name (e.g. Commander Dragons)"
+                            placeholder="Nombre del mazo (ej. Dragones Commander)"
                             className="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                             value={newDeckName}
                             onChange={e => setNewDeckName(e.target.value)}
                             autoFocus
                         />
                         <button type="submit" className="px-4 py-2 bg-purple-600 rounded-lg font-bold text-white hover:bg-purple-500">
-                            Create
+                            Crear
                         </button>
                         <button
                             type="button"
                             onClick={() => setIsCreating(false)}
                             className="px-4 py-2 text-slate-400 hover:text-slate-200"
                         >
-                            Cancel
+                            Cancelar
                         </button>
                     </form>
                 </div>
@@ -63,10 +63,10 @@ export default function DecksPage() {
             {decks.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-16 px-4 text-center border-2 border-dashed border-slate-800 rounded-xl bg-slate-900/50">
                     <Layers className="mb-4 text-slate-600" size={48} />
-                    <h3 className="text-xl font-bold text-slate-200 mb-2">No Decks Found</h3>
-                    <p className="text-slate-400 mb-6">Create your first deck to start building.</p>
+                    <h3 className="text-xl font-bold text-slate-200 mb-2">No hay mazos</h3>
+                    <p className="text-slate-400 mb-6">Crea tu primer mazo para empezar a construir.</p>
                     <button onClick={() => setIsCreating(true)} className="text-purple-400 hover:underline">
-                        Create one now
+                        Crear uno ahora
                     </button>
                 </div>
             ) : (
@@ -84,7 +84,7 @@ export default function DecksPage() {
                                 </div>
                                 <h3 className="text-xl font-bold text-white mb-2">{deck.name}</h3>
                                 <p className="text-slate-400">
-                                    {deck.cards.reduce((acc, c) => acc + c.quantity, 0)} cards
+                                    {deck.cards.reduce((acc, c) => acc + c.quantity, 0)} cartas
                                 </p>
                             </div>
                         </Link>

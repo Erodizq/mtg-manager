@@ -68,12 +68,12 @@ export default function CollectionGrid() {
         return (
             <div className="flex flex-col items-center justify-center py-16 px-4 text-center glass-panel rounded-2xl">
                 <div className="text-5xl mb-6 opacity-80">📭</div>
-                <h3 className="text-xl font-bold text-slate-200 mb-2">Collection is Empty</h3>
+                <h3 className="text-xl font-bold text-slate-200 mb-2">Tu Colección está vacía</h3>
                 <p className="text-slate-400 mb-8 max-w-sm">
-                    Start by scanning cards or searching manually to build your digital binder.
+                    Empieza escaneando cartas o buscando manualmente para llenar tu carpeta digital.
                 </p>
                 <Link href="/scan" className="btn-primary">
-                    Start Scanning
+                    Empezar a Escanear
                 </Link>
             </div>
         );
@@ -95,7 +95,7 @@ export default function CollectionGrid() {
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                     <input
                         type="text"
-                        placeholder="Search cards (Español/English)..."
+                        placeholder="Buscar cartas (Nombre/Tipo/Set)..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="w-full bg-slate-950/50 border border-slate-700/50 rounded-xl py-2 pl-10 pr-4 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
@@ -110,9 +110,9 @@ export default function CollectionGrid() {
                             onChange={(e) => setSortOption(e.target.value as SortOption)}
                             className="appearance-none bg-slate-950/50 border border-slate-700/50 rounded-xl py-2 pl-4 pr-10 text-sm text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/50 h-full w-full cursor-pointer hover:bg-slate-900 transition-colors"
                         >
-                            <option value="price-desc">💰 Price: High to Low</option>
-                            <option value="price-asc">📉 Price: Low to High</option>
-                            <option value="name-asc">🔤 Name: A-Z</option>
+                            <option value="price-desc">💰 Precio: Mayor a Menor</option>
+                            <option value="price-asc">📉 Precio: Menor a Mayor</option>
+                            <option value="name-asc">🔤 Nombre: A-Z</option>
                         </select>
                         <ArrowUpDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" size={14} />
                     </div>
@@ -137,13 +137,13 @@ export default function CollectionGrid() {
 
             {/* Stats Summary (Compact) */}
             <div className="flex justify-between items-center px-2 text-xs font-medium text-slate-400 uppercase tracking-widest">
-                <span>{processedCollection.length} Unique • {totalCards} Total</span>
+                <span>{processedCollection.length} Únicas • {totalCards} Total</span>
                 <span className="text-emerald-400 font-bold text-sm">${totalValue.toFixed(2)}</span>
             </div>
 
             {processedCollection.length === 0 ? (
                 <div className="text-center py-20 text-slate-500">
-                    <p>No cards match your filter.</p>
+                    <p>No hay cartas que coincidan.</p>
                 </div>
             ) : (
                 <>
@@ -165,7 +165,7 @@ export default function CollectionGrid() {
                                             />
                                         ) : (
                                             <div className="w-full h-full bg-slate-900 flex items-center justify-center text-slate-600">
-                                                <span className="text-xs">No Image</span>
+                                                <span className="text-xs">Sin Imagen</span>
                                             </div>
                                         )}
                                         <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-2 py-0.5 rounded-full border border-white/10 shadow-lg pointer-events-none">
@@ -216,7 +216,7 @@ export default function CollectionGrid() {
                                         {item.card.image_uris?.small ? (
                                             <img src={item.card.image_uris.small} className="w-full h-full object-cover" loading="lazy" />
                                         ) : (
-                                            <div className="w-full h-full flex items-center justify-center text-[8px] text-slate-500">No Img</div>
+                                            <div className="w-full h-full flex items-center justify-center text-[8px] text-slate-500">Sin Img</div>
                                         )}
                                     </div>
 
@@ -253,7 +253,7 @@ export default function CollectionGrid() {
                                             onClick={() => setDeckModalCard(item.card)}
                                             className="text-xs text-purple-400 flex items-center gap-1 py-1 px-2 rounded hover:bg-purple-500/10"
                                         >
-                                            <Layers size={12} /> Add to Deck
+                                            <Layers size={12} /> Al Mazo
                                         </button>
                                     </div>
                                 </div>

@@ -14,8 +14,8 @@ export default function DeckDetail() {
 
     const deck = decks.find(d => d.id === params.id);
 
-    if (!isLoaded) return <div className="p-8 text-center text-slate-500">Loading...</div>;
-    if (!deck) return <div className="p-8 text-center text-red-400">Deck not found</div>;
+    if (!isLoaded) return <div className="p-8 text-center text-slate-500">Cargando...</div>;
+    if (!deck) return <div className="p-8 text-center text-red-400">Mazo no encontrado</div>;
 
     const totalCards = deck.cards.reduce((acc, c) => acc + c.quantity, 0);
 
@@ -38,20 +38,20 @@ export default function DeckDetail() {
         }).join('\n');
 
         navigator.clipboard.writeText(text).then(() => {
-            alert("Deck exported to clipboard!");
+            alert("¡Mazo copiado al portapapeles!");
         });
     };
 
     return (
         <div className="min-h-screen pt-4 md:pt-24 px-4 pb-24">
             <Link href="/decks" className="flex items-center text-slate-400 hover:text-white mb-6">
-                <ArrowLeft size={20} className="mr-1" /> Back to Decks
+                <ArrowLeft size={20} className="mr-1" /> Volver a Mazos
             </Link>
 
             <div className="flex justify-between items-end mb-8 border-b border-slate-800 pb-6">
                 <div>
                     <h1 className="text-4xl font-bold text-white mb-2">{deck.name}</h1>
-                    <p className="text-slate-400">{totalCards} cards</p>
+                    <p className="text-slate-400">{totalCards} cartas</p>
                 </div>
 
                 <div className="flex gap-4">
@@ -59,9 +59,9 @@ export default function DeckDetail() {
                         onClick={handleExport}
                         className="text-blue-400 text-sm hover:underline font-medium"
                     >
-                        Export Text
+                        Exportar Texto
                     </button>
-                    <button className="text-red-400 text-sm hover:underline">Delete Deck</button>
+                    <button className="text-red-400 text-sm hover:underline">Borrar Mazo</button>
                 </div>
             </div>
 
@@ -71,7 +71,7 @@ export default function DeckDetail() {
                 <TypeDistributionChart cards={deck.cards} />
             </div>
 
-            <h3 className="text-xl font-bold text-white mb-4">Card List</h3>
+            <h3 className="text-xl font-bold text-white mb-4">Lista de Cartas</h3>
             <div className="grid gap-y-2">
                 {deck.cards.map(item => (
                     <div key={item.card.id} className="flex items-center bg-slate-800/50 p-3 rounded hover:bg-slate-800 border theme-border border-transparent hover:border-slate-700">
@@ -85,7 +85,7 @@ export default function DeckDetail() {
 
                 {deck.cards.length === 0 && (
                     <div className="text-center py-12 text-slate-500 italic">
-                        This deck is empty. Go to the Collection or Scanner to add cards.
+                        Este mazo está vacío. Ve a la Colección o al Escáner para añadir cartas.
                     </div>
                 )}
             </div>

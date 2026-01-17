@@ -9,9 +9,9 @@ export default function Navigation() {
     const pathname = usePathname();
 
     const navItems = [
-        { name: 'Collection', href: '/', icon: Home },
-        { name: 'Scan', href: '/scan', icon: Camera },
-        { name: 'Decks', href: '/decks', icon: Layers },
+        { name: 'Colección', href: '/', icon: Home },
+        { name: 'Escanear', href: '/scan', icon: Camera },
+        { name: 'Mazos', href: '/decks', icon: Layers },
     ];
 
     return (
