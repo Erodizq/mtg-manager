@@ -1,7 +1,11 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// Clave API: Preferiblemente desde variable de entorno, fallback a clave actual si no existe.
-const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "AIzaSyDDfvpsfDxcvmhIDlnHjZTy0SjSN3Q9wdc";
+// Clave API: Debe venir de variable de entorno
+const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
+
+if (!API_KEY) {
+  console.warn("⚠️ Falta la clave de API de Gemini (NEXT_PUBLIC_GEMINI_API_KEY)");
+}
 
 const genAI = new GoogleGenerativeAI(API_KEY);
 
