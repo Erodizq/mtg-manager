@@ -1,0 +1,87 @@
+"use client";
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Home, Camera, Layers, Settings } from 'lucide-react';
+import clsx from 'clsx';
+
+export default function Navigation() {
+    const pathname = usePathname();
+
+    const navItems = [
+        { name: 'Collection', href: '/', icon: Home },
+        { name: 'Scan', href: '/scan', icon: Camera },
+        { name: 'Decks', href: '/decks', icon: Layers },
+    ];
+
+    return (
+        <>
+            {/* Mobile Bottom Navigation */}
+            <nav className="fixed bottom-0 left-0 right-0 z-50 glass-nav pb-safe md:hidden">
+                <div className="flex justify-around items-center h-16 px-2">
+                    {navItems.map((item) => {
+                        const isActive = pathname === item.href;
+                        return (
+                            <Link
+                                key={item.href}
+                                href={item.href}
+                                className={clsx(
+                                    "relative flex flex-col items-center justify-center w-full h-full space-y-1 transition-all duration-300",
+                                    isActive ? "text-blue-400" : "text-slate-500 hover:text-slate-300",
+                                    "tap-highlight rounded-xl"
+                                )}
+                            >
+                                {/* Active Indicator Glow */}
+                                {isActive && (
+                                    <div className="absolute top-0 w-8 h-1 bg-blue-500 rounded-b-full shadow-[0_0_10px_#3b82f6]"></div>
+                                )}
+
+                                <div className={clsx("transition-transform duration-300", isActive && "scale-110")}>
+                                    <item.icon size={24} strokeWidth={isActive ? 2.5 : 2} />
+                                </div>
+                                <span className={clsx("text-[10px] font-medium tracking-wide", isActive ? "text-blue-300" : "opacity-80")}>
+                                    {item.name}
+                                </span>
+                            </Link>
+                        );
+                    })}
+                </div>
+            </nav>
+
+            {/* Desktop Header Navigation */}
+            <header className="hidden md:block fixed top-0 left-0 right-0 z-50 bg-slate-950/50 backdrop-blur-xl border-b border-white/10">
+                <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center font-bold text-white text-lg shadow-lg shadow-blue-500/20">
+                            M
+                        </div>
+                        <div className="text-xl font-bold bg-gradient-to-r from-blue-200 to-blue-400 bg-clip-text text-transparent">
+                            MTG Manager
+                        </div>
+                    </div>
+
+                    <div className="flex gap-2">
+                        {navItems.map((item) => {
+                            const isActive = pathname === item.href;
+                            return (
+                                <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    className={clsx(
+                                        "flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300 border border-transparent",
+                                        isActive
+                                            ? "bg-blue-500/10 text-blue-300 border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.1)]"
+                                            : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
+                                    )}
+                                >
+                                    <item.icon size={18} />
+                                    <span className="font-medium text-sm">{item.name}</span>
+                                </Link>
+                            );
+                        })}
+                    </div>
+                </div>
+            </header>
+        </>
+    );
+}

@@ -1,0 +1,275 @@
+"use client";
+
+import { useCollection, ScryfallCard } from "@/lib/storage";
+import { Trash2, Plus, Layers, Search, ArrowUpDown, LayoutGrid, List as ListIcon } from "lucide-react";
+import Link from 'next/link';
+import { useState, useMemo } from "react";
+import AddToDeckModal from "./AddToDeckModal";
+import CardDetailModal from "./CardDetailModal";
+import clsx from "clsx";
+
+type SortOption = 'name-asc' | 'price-desc' | 'price-asc';
+type ViewMode = 'grid' | 'list';
+
+export default function CollectionGrid() {
+    const { collection, removeFromCollection, isLoaded, addToCollection } = useCollection();
+    const [deckModalCard, setDeckModalCard] = useState<ScryfallCard | null>(null);
+    const [detailModalCard, setDetailModalCard] = useState<ScryfallCard | null>(null);
+
+    // UI State
+    const [searchTerm, setSearchTerm] = useState("");
+    const [sortOption, setSortOption] = useState<SortOption>('price-desc');
+    const [viewMode, setViewMode] = useState<ViewMode>('grid');
+
+    // Filter & Sort Logic
+    const processedCollection = useMemo(() => {
+        let result = [...collection];
+
+        // 1. Filter
+        if (searchTerm) {
+            const lowerTerm = searchTerm.toLowerCase();
+            result = result.filter(item =>
+                item.card.name.toLowerCase().includes(lowerTerm) ||
+                (item.card.printed_name && item.card.printed_name.toLowerCase().includes(lowerTerm)) ||
+                item.card.set_name.toLowerCase().includes(lowerTerm) ||
+                item.card.type_line.toLowerCase().includes(lowerTerm)
+            );
+        }
+
+        // 2. Sort
+        result.sort((a, b) => {
+            const nameA = a.card.printed_name || a.card.name;
+            const nameB = b.card.printed_name || b.card.name;
+
+            switch (sortOption) {
+                case 'name-asc':
+                    return nameA.localeCompare(nameB, 'es', { sensitivity: 'base' });
+                case 'price-desc':
+                    return (parseFloat(b.card.prices.usd || "0") - parseFloat(a.card.prices.usd || "0"));
+                case 'price-asc':
+                    return (parseFloat(a.card.prices.usd || "0") - parseFloat(b.card.prices.usd || "0"));
+                default:
+                    return 0;
+            }
+        });
+
+        return result;
+    }, [collection, searchTerm, sortOption]);
+
+    if (!isLoaded) {
+        return (
+            <div className="flex justify-center items-center h-64">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+            </div>
+        );
+    }
+
+    if (collection.length === 0) {
+        return (
+            <div className="flex flex-col items-center justify-center py-16 px-4 text-center glass-panel rounded-2xl">
+                <div className="text-5xl mb-6 opacity-80">📭</div>
+                <h3 className="text-xl font-bold text-slate-200 mb-2">Collection is Empty</h3>
+                <p className="text-slate-400 mb-8 max-w-sm">
+                    Start by scanning cards or searching manually to build your digital binder.
+                </p>
+                <Link href="/scan" className="btn-primary">
+                    Start Scanning
+                </Link>
+            </div>
+        );
+    }
+
+    // Stats
+    const totalCards = collection.reduce((acc, item) => acc + item.quantity, 0);
+    const totalValue = processedCollection.reduce((acc, item) => {
+        const price = parseFloat(item.card.prices.usd || "0");
+        return acc + (price * item.quantity);
+    }, 0);
+
+    return (
+        <div className="space-y-6 pb-24 md:pb-0">
+            {/* Controls Bar */}
+            <div className="flex flex-col md:flex-row gap-4 justify-between bg-slate-900/40 backdrop-blur-md p-4 rounded-2xl border border-white/5 sticky top-0 md:top-20 z-40 shadow-xl">
+                {/* Search */}
+                <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                    <input
+                        type="text"
+                        placeholder="Search cards (Español/English)..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full bg-slate-950/50 border border-slate-700/50 rounded-xl py-2 pl-10 pr-4 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
+                    />
+                </div>
+
+                <div className="flex gap-2">
+                    {/* Sort Dropdown */}
+                    <div className="relative">
+                        <select
+                            value={sortOption}
+                            onChange={(e) => setSortOption(e.target.value as SortOption)}
+                            className="appearance-none bg-slate-950/50 border border-slate-700/50 rounded-xl py-2 pl-4 pr-10 text-sm text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/50 h-full w-full cursor-pointer hover:bg-slate-900 transition-colors"
+                        >
+                            <option value="price-desc">💰 Price: High to Low</option>
+                            <option value="price-asc">📉 Price: Low to High</option>
+                            <option value="name-asc">🔤 Name: A-Z</option>
+                        </select>
+                        <ArrowUpDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" size={14} />
+                    </div>
+
+                    {/* View Toggle */}
+                    <div className="flex bg-slate-950/50 rounded-xl p-1 border border-slate-700/50">
+                        <button
+                            onClick={() => setViewMode('grid')}
+                            className={clsx("p-2 rounded-lg transition-all", viewMode === 'grid' ? "bg-slate-700 text-blue-400 shadow-sm" : "text-slate-500 hover:text-slate-300")}
+                        >
+                            <LayoutGrid size={18} />
+                        </button>
+                        <button
+                            onClick={() => setViewMode('list')}
+                            className={clsx("p-2 rounded-lg transition-all", viewMode === 'list' ? "bg-slate-700 text-blue-400 shadow-sm" : "text-slate-500 hover:text-slate-300")}
+                        >
+                            <ListIcon size={18} />
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Stats Summary (Compact) */}
+            <div className="flex justify-between items-center px-2 text-xs font-medium text-slate-400 uppercase tracking-widest">
+                <span>{processedCollection.length} Unique • {totalCards} Total</span>
+                <span className="text-emerald-400 font-bold text-sm">${totalValue.toFixed(2)}</span>
+            </div>
+
+            {processedCollection.length === 0 ? (
+                <div className="text-center py-20 text-slate-500">
+                    <p>No cards match your filter.</p>
+                </div>
+            ) : (
+                <>
+                    {viewMode === 'grid' ? (
+                        /* GRID VIEW */
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
+                            {processedCollection.map((item) => (
+                                <div key={item.card.id} className="relative group flex flex-col glass-panel rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/10 hover:border-white/20">
+                                    <div
+                                        className="relative aspect-[5/7] cursor-pointer tap-highlight"
+                                        onClick={() => setDetailModalCard(item.card)}
+                                    >
+                                        {item.card.image_uris?.normal ? (
+                                            <img
+                                                src={item.card.image_uris.normal}
+                                                alt={item.card.printed_name || item.card.name}
+                                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                                loading="lazy"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full bg-slate-900 flex items-center justify-center text-slate-600">
+                                                <span className="text-xs">No Image</span>
+                                            </div>
+                                        )}
+                                        <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-2 py-0.5 rounded-full border border-white/10 shadow-lg pointer-events-none">
+                                            x{item.quantity}
+                                        </div>
+                                    </div>
+
+                                    <div className="p-3 flex-1 flex flex-col justify-between bg-slate-950/30 backdrop-blur-sm">
+                                        <div className="mb-2 relative z-10">
+                                            <h4 className="font-bold text-sm text-slate-100 line-clamp-1 leading-tight">{item.card.printed_name || item.card.name}</h4>
+                                            <div className="text-[10px] text-slate-400 flex justify-between mt-1 items-center">
+                                                <span className="uppercase tracking-wider opacity-70">{item.card.set_name.substring(0, 3)}</span>
+                                                <span className="text-emerald-400 font-mono font-bold text-xs">${item.card.prices.usd || '-'}</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex justify-between items-center pt-2 border-t border-white/5 gap-2 relative z-10">
+                                            <button
+                                                onClick={() => setDeckModalCard(item.card)}
+                                                className="p-2 text-purple-300 hover:text-white hover:bg-purple-500/20 rounded-lg transition-colors flex-1 flex justify-center"
+                                            >
+                                                <Layers size={16} />
+                                            </button>
+                                            <div className="w-px h-4 bg-white/10" />
+                                            <div className="flex gap-1 flex-1 justify-end">
+                                                <button onClick={() => removeFromCollection(item.card.id)} className="p-2 text-red-300 hover:text-white hover:bg-red-500/20 rounded-lg">
+                                                    <Trash2 size={16} />
+                                                </button>
+                                                <button onClick={() => addToCollection(item.card)} className="p-2 text-blue-300 hover:text-white hover:bg-blue-500/20 rounded-lg">
+                                                    <Plus size={16} />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        /* LIST VIEW */
+                        <div className="flex flex-col gap-2">
+                            {processedCollection.map((item) => (
+                                <div key={item.card.id} className="glass-panel p-3 rounded-xl flex items-center gap-3 transition-all active:scale-[0.99]">
+                                    {/* Thumbnail */}
+                                    <div
+                                        className="w-12 h-16 bg-slate-800 rounded-lg overflow-hidden flex-shrink-0 cursor-pointer shadow-md"
+                                        onClick={() => setDetailModalCard(item.card)}
+                                    >
+                                        {item.card.image_uris?.small ? (
+                                            <img src={item.card.image_uris.small} className="w-full h-full object-cover" loading="lazy" />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center text-[8px] text-slate-500">No Img</div>
+                                        )}
+                                    </div>
+
+                                    {/* Info */}
+                                    <div className="flex-1 min-w-0" onClick={() => setDetailModalCard(item.card)}>
+                                        <h4 className="font-bold text-sm text-slate-100 truncate">{item.card.printed_name || item.card.name}</h4>
+                                        <div className="flex items-center gap-2 text-xs text-slate-400">
+                                            <span className="uppercase bg-slate-800 px-1.5 rounded text-[10px]">{item.card.set_name.substring(0, 3)}</span>
+                                            <span>{item.card.type_line.split('—')[0].trim()}</span>
+                                        </div>
+                                        <div className="mt-1 font-mono text-emerald-400 font-bold text-xs">
+                                            ${item.card.prices.usd || '-'}
+                                        </div>
+                                    </div>
+
+                                    {/* Actions */}
+                                    <div className="flex flex-col items-end gap-1">
+                                        <div className="flex items-center bg-slate-950/50 rounded-lg border border-slate-700/50 overflow-hidden">
+                                            <button
+                                                onClick={() => removeFromCollection(item.card.id)}
+                                                className="p-2 text-slate-400 hover:text-red-400 hover:bg-red-500/10"
+                                            >
+                                                <Trash2 size={14} />
+                                            </button>
+                                            <span className="w-8 text-center text-sm font-bold border-x border-slate-700/50">{item.quantity}</span>
+                                            <button
+                                                onClick={() => addToCollection(item.card)}
+                                                className="p-2 text-slate-400 hover:text-blue-400 hover:bg-blue-500/10"
+                                            >
+                                                <Plus size={14} />
+                                            </button>
+                                        </div>
+                                        <button
+                                            onClick={() => setDeckModalCard(item.card)}
+                                            className="text-xs text-purple-400 flex items-center gap-1 py-1 px-2 rounded hover:bg-purple-500/10"
+                                        >
+                                            <Layers size={12} /> Add to Deck
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </>
+            )}
+
+            {deckModalCard && (
+                <AddToDeckModal card={deckModalCard} onClose={() => setDeckModalCard(null)} />
+            )}
+
+            {detailModalCard && (
+                <CardDetailModal card={detailModalCard} onClose={() => setDetailModalCard(null)} />
+            )}
+        </div>
+    );
+}
