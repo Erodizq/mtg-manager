@@ -13,6 +13,7 @@ export interface ScryfallCard {
     };
     set_name: string;
     collector_number: string;
+    rarity: string;
     cmc: number;
     type_line: string;
     mana_cost?: string;
