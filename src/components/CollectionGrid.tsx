@@ -1,7 +1,5 @@
-"use client";
-
 import { useCollection, ScryfallCard } from "@/lib/storage";
-import { Trash2, Plus, Layers, Search, ArrowUpDown, LayoutGrid, List as ListIcon } from "lucide-react";
+import { Trash2, Plus, Layers, Search, ArrowUpDown, LayoutGrid, List as ListIcon, Filter, X } from "lucide-react";
 import Link from 'next/link';
 import { useState, useMemo } from "react";
 import AddToDeckModal from "./AddToDeckModal";
@@ -10,6 +8,14 @@ import clsx from "clsx";
 
 type SortOption = 'name-asc' | 'price-desc' | 'price-asc';
 type ViewMode = 'grid' | 'list';
+
+const COLORS = [
+    { id: 'W', label: 'Blanco', bg: 'bg-yellow-100', border: 'border-yellow-300', text: 'text-yellow-800' },
+    { id: 'U', label: 'Azul', bg: 'bg-blue-100', border: 'border-blue-300', text: 'text-blue-800' },
+    { id: 'B', label: 'Negro', bg: 'bg-slate-300', border: 'border-slate-500', text: 'text-slate-800' },
+    { id: 'R', label: 'Rojo', bg: 'bg-red-100', border: 'border-red-300', text: 'text-red-800' },
+    { id: 'G', label: 'Verde', bg: 'bg-green-100', border: 'border-green-300', text: 'text-green-800' },
+];
 
 export default function CollectionGrid() {
     const { collection, removeFromCollection, isLoaded, addToCollection } = useCollection();
@@ -21,11 +27,39 @@ export default function CollectionGrid() {
     const [sortOption, setSortOption] = useState<SortOption>('price-desc');
     const [viewMode, setViewMode] = useState<ViewMode>('grid');
 
+    // Advanced Filter State
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [selectedSet, setSelectedSet] = useState<string>('all');
+    const [selectedRarity, setSelectedRarity] = useState<string>('all');
+    const [selectedColors, setSelectedColors] = useState<string[]>([]);
+
+    // Derived Data: Unique Sets
+    const uniqueSets = useMemo(() => {
+        const sets = new Set(collection.map(item => item.card.set_name));
+        return Array.from(sets).sort();
+    }, [collection]);
+
+    // Derived Data: Active Filters Count
+    const activeFiltersCount = (selectedSet !== 'all' ? 1 : 0) + (selectedRarity !== 'all' ? 1 : 0) + selectedColors.length;
+
+    const toggleColor = (color: string) => {
+        setSelectedColors(prev =>
+            prev.includes(color) ? prev.filter(c => c !== color) : [...prev, color]
+        );
+    };
+
+    const clearFilters = () => {
+        setSearchTerm("");
+        setSelectedSet('all');
+        setSelectedRarity('all');
+        setSelectedColors([]);
+    };
+
     // Filter & Sort Logic
     const processedCollection = useMemo(() => {
         let result = [...collection];
 
-        // 1. Filter
+        // 1. Text Search
         if (searchTerm) {
             const lowerTerm = searchTerm.toLowerCase();
             result = result.filter(item =>
@@ -36,7 +70,28 @@ export default function CollectionGrid() {
             );
         }
 
-        // 2. Sort
+        // 2. Set Filter
+        if (selectedSet !== 'all') {
+            result = result.filter(item => item.card.set_name === selectedSet);
+        }
+
+        // 3. Rarity Filter
+        if (selectedRarity !== 'all') {
+            result = result.filter(item => item.card.rarity === selectedRarity);
+        }
+
+        // 4. Color Filter (OR logic: if card has ANY of the selected colors)
+        if (selectedColors.length > 0) {
+            result = result.filter(item => {
+                const cardColors = item.card.colors || [];
+                // If card is colorless and we filter for it? (Optional, skipping for now)
+                // Match if card shares at least one color with selection
+                if (cardColors.length === 0) return false; // Or strict colorless check?
+                return selectedColors.some(c => cardColors.includes(c));
+            });
+        }
+
+        // 5. Sort
         result.sort((a, b) => {
             const nameA = a.card.printed_name || a.card.name;
             const nameB = b.card.printed_name || b.card.name;
@@ -54,7 +109,7 @@ export default function CollectionGrid() {
         });
 
         return result;
-    }, [collection, searchTerm, sortOption]);
+    }, [collection, searchTerm, sortOption, selectedSet, selectedRarity, selectedColors]);
 
     if (!isLoaded) {
         return (
@@ -89,50 +144,140 @@ export default function CollectionGrid() {
     return (
         <div className="space-y-6 pb-24 md:pb-0">
             {/* Controls Bar */}
-            <div className="flex flex-col md:flex-row gap-4 justify-between bg-slate-900/40 backdrop-blur-md p-4 rounded-2xl border border-white/5 sticky top-0 md:top-20 z-40 shadow-xl">
-                {/* Search */}
-                <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                    <input
-                        type="text"
-                        placeholder="Buscar cartas (Nombre/Tipo/Set)..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full bg-slate-950/50 border border-slate-700/50 rounded-xl py-2 pl-10 pr-4 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
-                    />
-                </div>
-
-                <div className="flex gap-2">
-                    {/* Sort Dropdown */}
-                    <div className="relative">
-                        <select
-                            value={sortOption}
-                            onChange={(e) => setSortOption(e.target.value as SortOption)}
-                            className="appearance-none bg-slate-950/50 border border-slate-700/50 rounded-xl py-2 pl-4 pr-10 text-sm text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/50 h-full w-full cursor-pointer hover:bg-slate-900 transition-colors"
-                        >
-                            <option value="price-desc">💰 Precio: Mayor a Menor</option>
-                            <option value="price-asc">📉 Precio: Menor a Mayor</option>
-                            <option value="name-asc">🔤 Nombre: A-Z</option>
-                        </select>
-                        <ArrowUpDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" size={14} />
+            <div className="flex flex-col gap-4 bg-slate-900/40 backdrop-blur-md p-4 rounded-2xl border border-white/5 sticky top-0 md:top-20 z-40 shadow-xl">
+                <div className="flex flex-col md:flex-row gap-4 justify-between">
+                    {/* Search */}
+                    <div className="relative flex-1">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                        <input
+                            type="text"
+                            placeholder="Buscar (Nombre/Tipo)..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full bg-slate-950/50 border border-slate-700/50 rounded-xl py-2 pl-10 pr-4 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
+                        />
                     </div>
 
-                    {/* View Toggle */}
-                    <div className="flex bg-slate-950/50 rounded-xl p-1 border border-slate-700/50">
+                    <div className="flex gap-2 shrink-0">
+                        {/* Filter Toggle */}
                         <button
-                            onClick={() => setViewMode('grid')}
-                            className={clsx("p-2 rounded-lg transition-all", viewMode === 'grid' ? "bg-slate-700 text-blue-400 shadow-sm" : "text-slate-500 hover:text-slate-300")}
+                            onClick={() => setIsFilterOpen(!isFilterOpen)}
+                            className={clsx(
+                                "relative p-2 rounded-xl border transition-all flex items-center gap-2",
+                                isFilterOpen || activeFiltersCount > 0
+                                    ? "bg-blue-600/20 border-blue-500 text-blue-200"
+                                    : "bg-slate-950/50 border-slate-700/50 text-slate-400 hover:text-white"
+                            )}
                         >
-                            <LayoutGrid size={18} />
+                            <Filter size={18} />
+                            {activeFiltersCount > 0 && (
+                                <span className="flex items-center justify-center bg-blue-500 text-white text-[10px] font-bold w-5 h-5 rounded-full">
+                                    {activeFiltersCount}
+                                </span>
+                            )}
                         </button>
-                        <button
-                            onClick={() => setViewMode('list')}
-                            className={clsx("p-2 rounded-lg transition-all", viewMode === 'list' ? "bg-slate-700 text-blue-400 shadow-sm" : "text-slate-500 hover:text-slate-300")}
-                        >
-                            <ListIcon size={18} />
-                        </button>
+
+                        {/* Sort Dropdown */}
+                        <div className="relative">
+                            <select
+                                value={sortOption}
+                                onChange={(e) => setSortOption(e.target.value as SortOption)}
+                                className="appearance-none bg-slate-950/50 border border-slate-700/50 rounded-xl py-2 pl-4 pr-10 text-sm text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/50 h-full w-full cursor-pointer hover:bg-slate-900 transition-colors"
+                            >
+                                <option value="price-desc">💰 Precio: Aleatorio</option>
+                                <option value="price-desc">💰 Precio: M-m</option>
+                                <option value="price-asc">📉 Precio: m-M</option>
+                                <option value="name-asc">🔤 Nombre: A-Z</option>
+                            </select>
+                        </div>
+
+                        {/* View Toggle */}
+                        <div className="flex bg-slate-950/50 rounded-xl p-1 border border-slate-700/50">
+                            <button
+                                onClick={() => setViewMode('grid')}
+                                className={clsx("p-2 rounded-lg transition-all", viewMode === 'grid' ? "bg-slate-700 text-blue-400 shadow-sm" : "text-slate-500 hover:text-slate-300")}
+                            >
+                                <LayoutGrid size={18} />
+                            </button>
+                            <button
+                                onClick={() => setViewMode('list')}
+                                className={clsx("p-2 rounded-lg transition-all", viewMode === 'list' ? "bg-slate-700 text-blue-400 shadow-sm" : "text-slate-500 hover:text-slate-300")}
+                            >
+                                <ListIcon size={18} />
+                            </button>
+                        </div>
                     </div>
                 </div>
+
+                {/* Advanced Filter Panel */}
+                {isFilterOpen && (
+                    <div className="pt-4 border-t border-white/5 grid grid-cols-1 md:grid-cols-3 gap-4 animate-in slide-in-from-top-2 fade-in">
+                        {/* Set Filter */}
+                        <div className="space-y-1">
+                            <label className="text-xs text-slate-400 font-bold uppercase tracking-wider">Edición</label>
+                            <select
+                                value={selectedSet}
+                                onChange={(e) => setSelectedSet(e.target.value)}
+                                className="w-full bg-slate-900 border border-slate-700 rounded-lg py-2 px-3 text-sm text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                            >
+                                <option value="all">Todas las Ediciones</option>
+                                {uniqueSets.map(set => (
+                                    <option key={set} value={set}>{set}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Rarity Filter */}
+                        <div className="space-y-1">
+                            <label className="text-xs text-slate-400 font-bold uppercase tracking-wider">Rareza</label>
+                            <select
+                                value={selectedRarity}
+                                onChange={(e) => setSelectedRarity(e.target.value)}
+                                className="w-full bg-slate-900 border border-slate-700 rounded-lg py-2 px-3 text-sm text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                            >
+                                <option value="all">Todas</option>
+                                <option value="common">Común</option>
+                                <option value="uncommon">Infrecuente</option>
+                                <option value="rare">Rara</option>
+                                <option value="mythic">Mítica</option>
+                            </select>
+                        </div>
+
+                        {/* Color Filter */}
+                        <div className="space-y-1">
+                            <label className="text-xs text-slate-400 font-bold uppercase tracking-wider">Color</label>
+                            <div className="flex gap-2">
+                                {COLORS.map(c => (
+                                    <button
+                                        key={c.id}
+                                        onClick={() => toggleColor(c.id)}
+                                        className={clsx(
+                                            "w-8 h-8 rounded-full border-2 flex items-center justify-center font-bold text-xs transition-all",
+                                            selectedColors.includes(c.id)
+                                                ? `${c.bg} ${c.border} ${c.text} ring-2 ring-white/20 scale-110`
+                                                : "bg-slate-800 border-slate-600 text-slate-400 opacity-50 hover:opacity-100"
+                                        )}
+                                        title={c.label}
+                                    >
+                                        {c.id}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Clear Filters */}
+                        {activeFiltersCount > 0 && (
+                            <div className="md:col-span-3 flex justify-end">
+                                <button
+                                    onClick={clearFilters}
+                                    className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1 bg-red-500/10 px-3 py-1.5 rounded-full"
+                                >
+                                    <X size={12} /> Limpiar Filtros
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
 
             {/* Stats Summary (Compact) */}
@@ -142,8 +287,12 @@ export default function CollectionGrid() {
             </div>
 
             {processedCollection.length === 0 ? (
-                <div className="text-center py-20 text-slate-500">
-                    <p>No hay cartas que coincidan.</p>
+                <div className="flex flex-col items-center justify-center py-20 text-slate-500">
+                    <Search size={48} className="mb-4 opacity-20" />
+                    <p className="font-medium">No hay cartas que coincidan con los filtros.</p>
+                    <button onClick={clearFilters} className="mt-2 text-blue-400 hover:underline">
+                        Limpiar todos los filtros
+                    </button>
                 </div>
             ) : (
                 <>
@@ -273,3 +422,4 @@ export default function CollectionGrid() {
         </div>
     );
 }
+
