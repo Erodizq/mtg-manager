@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navigation from "@/components/layout/Navigation";
+import { AuthProvider } from "@/lib/auth-context";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -34,12 +35,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="min-h-screen text-slate-100 pb-20 md:pb-0">
-          <Navigation />
-          <main className="container mx-auto">
-            {children}
-          </main>
-        </div>
+        <AuthProvider>
+          <div className="min-h-screen text-slate-100 pb-20 md:pb-0">
+            <Navigation />
+            <main className="container mx-auto">
+              {children}
+            </main>
+          </div>
+        </AuthProvider>
       </body>
     </html>
   );
