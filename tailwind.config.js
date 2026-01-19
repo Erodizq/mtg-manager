@@ -8,6 +8,10 @@ module.exports = {
             colors: {
                 background: "var(--background)",
                 foreground: "var(--foreground)",
+                primary: "var(--color-primary)",
+                'primary-light': "var(--color-primary-light)",
+                'primary-dark': "var(--color-primary-dark)",
+                accent: "var(--color-accent)",
                 slate: {
                     850: '#1e293b', // Custom darker slate
                     950: '#020617', // Deepest background

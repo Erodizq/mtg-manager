@@ -61,6 +61,13 @@
 :root {
   --background: #020617;
   --foreground: #f8fafc;
+
+  /* Theme colors - will be dynamically updated by ThemeProvider */
+  --color-primary: #3b82f6;
+  --color-primary-light: #60a5fa;
+  --color-primary-dark: #2563eb;
+  --color-accent: #93c5fd;
+  --color-glow: rgba(59, 130, 246, 0.3);
 }
 
 body {
@@ -91,7 +98,9 @@ body {
   }
 
   .btn-primary {
-    @apply bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-medium py-3 px-6 rounded-xl transition-all active:scale-95 shadow-lg shadow-blue-900/40 border border-white/10;
+    background: linear-gradient(to right, var(--color-primary), var(--color-primary-dark));
+    @apply hover:brightness-110 text-white font-medium py-3 px-6 rounded-xl transition-all active:scale-95 shadow-lg border border-white/10;
+    box-shadow: 0 10px 25px var(--color-glow);
   }
 
   .theme-border {

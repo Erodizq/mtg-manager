@@ -14,6 +14,7 @@ export default function Navigation() {
         { name: 'Colección', href: '/', icon: Home },
         { name: 'Escanear', href: '/scan', icon: Camera },
         { name: 'Mazos', href: '/decks', icon: Layers },
+        { name: 'Ajustes', href: '/settings', icon: Settings },
     ];
 
     return (
