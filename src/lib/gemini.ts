@@ -42,8 +42,8 @@ export async function identifyCardWithGemini(imageBase64: string): Promise<strin
     const response = await result.response;
     const text = response.text().replace(/```json/g, '').replace(/```/g, '').trim();
     return text;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Gemini Vision Error:", error);
-    throw new Error("No se pudo identificar la carta con Gemini.");
+    throw new Error(error.message || "No se pudo identificar la carta con Gemini.");
   }
 }

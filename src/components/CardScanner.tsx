@@ -91,21 +91,35 @@ export default function CardScanner() {
                     setCapturedImage(fullImageUrl);
                     stopCamera();
 
-                    // 2. Process for Gemini
-                    // STRATEGY CHANGE: Gemini is smart!
-                    // Send the FULL image, not just the top half. 
-                    // It can find the card in the frame better than we can crop it.
+                    // 2. Process for Gemini (Downscaled for performance/limits)
+                    // Create a temporary canvas for resizing
+                    const MAX_DIMENSION = 1024;
+                    let processWidth = vWidth;
+                    let processHeight = vHeight;
 
-                    // Revert to DataURL but use JPEG to reduce size/memory
-                    // We use the full canvas we just drew (canvas.width = vWidth)
-                    const processedImageUrl = canvas.toDataURL('image/jpeg', 0.8);
+                    if (processWidth > MAX_DIMENSION || processHeight > MAX_DIMENSION) {
+                        const ratio = Math.min(MAX_DIMENSION / processWidth, MAX_DIMENSION / processHeight);
+                        processWidth = Math.round(processWidth * ratio);
+                        processHeight = Math.round(processHeight * ratio);
+                    }
 
-                    if (processedImageUrl && processedImageUrl.length > 100) {
-                        setDebugImage(processedImageUrl);
-                        processImage(processedImageUrl);
-                    } else {
-                        console.error("Canvas export failed");
-                        setStatusMessage("Fallo al exportar imagen. Intenta de nuevo.");
+                    const processCanvas = document.createElement('canvas');
+                    processCanvas.width = processWidth;
+                    processCanvas.height = processHeight;
+                    const pCtx = processCanvas.getContext('2d');
+
+                    if (pCtx) {
+                        pCtx.drawImage(canvas, 0, 0, processWidth, processHeight);
+                        // Use JPEG with lower quality to ensure small payload
+                        const processedImageUrl = processCanvas.toDataURL('image/jpeg', 0.7);
+
+                        if (processedImageUrl && processedImageUrl.length > 100) {
+                            setDebugImage(processedImageUrl);
+                            processImage(processedImageUrl);
+                        } else {
+                            console.error("Canvas export failed");
+                            setStatusMessage("Fallo al exportar imagen. Intenta de nuevo.");
+                        }
                     }
                 }
             } catch (error) {
@@ -126,7 +140,7 @@ export default function CardScanner() {
             if (typeof imageInput === 'string') {
                 base64Image = imageInput;
             } else if (imageInput instanceof HTMLCanvasElement) {
-                base64Image = imageInput.toDataURL('image/jpeg', 0.8);
+                base64Image = imageInput.toDataURL('image/jpeg', 0.7);
             } else {
                 throw new Error("Formato de imagen inválido para Gemini");
             }
@@ -184,9 +198,10 @@ export default function CardScanner() {
             // Search Scryfall
             await performSearch(preciseQuery);
 
-        } catch (err) {
+        } catch (err: any) {
             console.error("Gemini/Search Error:", err);
-            setStatusMessage("Error identificando la carta. Intenta de nuevo.");
+            // Show the ACTUAL error message
+            setStatusMessage(`Error: ${err.message || String(err)}`);
         } finally {
             setIsProcessing(false);
         }
