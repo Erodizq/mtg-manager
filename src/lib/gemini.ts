@@ -21,7 +21,7 @@ export async function identifyCardWithGemini(imageBase64: string): Promise<strin
     Identifica la carta de Magic the Gathering en esta imagen.
     Devuelve SOLAMENTE un objeto JSON válido con estos campos:
     {
-      "name": "Nombre en inglés de la carta",
+      "name": "Nombre EXACTO en INGLÉS de la carta (incluso si está en español)",
       "set_code": "Código de 3 letras de la expansión si es visible (ej. MID, NEO)",
       "collector_number": "Número de coleccionista si es visible"
     }

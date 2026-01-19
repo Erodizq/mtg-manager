@@ -187,10 +187,20 @@ export default function CardScanner() {
             setStatusMessage(`Identificado: "${cardName}" ${setCode ? `(${setCode})` : ''}`);
 
             // Construct Precise Search Query
-            // If we have set and number, we can find the EXACT card version.
-            let preciseQuery = `!"${cardName}"`;
-            if (setCode) preciseQuery += ` set:${setCode}`;
-            if (collectorNumber) preciseQuery += ` cn:${collectorNumber}`;
+            // STRATEGY FIX: If we have Set + CN, use ONLY that! It's unique and language-agnostic.
+            // "Purple Worm" vs "Gusano Púrpura" doesn't matter if we search set:AFR cn:201
+            let preciseQuery = "";
+
+            if (setCode && collectorNumber) {
+                // Best case: Unique ID
+                preciseQuery = `set:${setCode} cn:${collectorNumber} include:extras`;
+            } else {
+                // Fallback: Name search
+                // Drop the "!" strict search if we suspect language issues, but strict is safer for English.
+                // Let's keep strict but rely on the improved Gemini prompt for English names.
+                preciseQuery = `!"${cardName}"`;
+                if (setCode) preciseQuery += ` set:${setCode}`;
+            }
 
             setSearchQuery(preciseQuery);
             console.log("Searching Scryfall with:", preciseQuery);
