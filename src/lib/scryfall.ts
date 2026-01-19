@@ -28,11 +28,13 @@ export async function searchCard(query: string): Promise<ScryfallCard[]> {
     if (!query) return [];
 
     try {
-        // Search prioritizing Spanish (lang:es or lang:en if not found)
-        // We use include_multilingual=true to get Spanish prints if available
+        // Encode the query for URL
         const term = encodeURIComponent(query);
-        // We search normally but ask for all languages, then we can filter/sort by lang='es'
-        const response = await fetch(`${SCRYFALL_API_BASE}/cards/search?q=${term}&include_multilingual=true&unique=prints`);
+
+        // Use unique=prints to get all printings
+        // Note: We removed include_multilingual because it conflicts with advanced syntax like set:AFR cn:325
+        // Advanced syntax already handles language selection properly
+        const response = await fetch(`${SCRYFALL_API_BASE}/cards/search?q=${term}&unique=prints`);
 
         if (!response.ok) {
             if (response.status === 404) return [];
@@ -41,13 +43,6 @@ export async function searchCard(query: string): Promise<ScryfallCard[]> {
 
         const data = await response.json();
         let cards: ScryfallCard[] = data.data || [];
-
-        // Prefer Spanish version if multiple versions of the same card exist
-        // Note: Scryfall search 'unique=prints' returns all prints. 
-        // We might want to filter to show Spanish if available, else English.
-
-        // Simple strategy: Return everything scryfall found matching the query.
-        // User asked to "search in Spanish". Scryfall handles this if query is Spanish.
 
         return cards;
     } catch (error) {
