@@ -1,17 +1,14 @@
 "use client";
 
-import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Camera, Layers, Settings, LogIn, LogOut, User as UserIcon } from 'lucide-react';
 import clsx from 'clsx';
 import { useAuth } from '@/lib/auth-context';
-import LoginModal from '../LoginModal';
 
 export default function Navigation() {
     const pathname = usePathname();
     const { user, signOut } = useAuth();
-    const [isLoginOpen, setIsLoginOpen] = useState(false);
 
     const navItems = [
         { name: 'Colección', href: '/', icon: Home },
