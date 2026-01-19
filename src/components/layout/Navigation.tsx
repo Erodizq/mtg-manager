@@ -49,21 +49,27 @@ export default function Navigation() {
                     })}
 
                     {/* Mobile Auth Button */}
-                    <button
-                        onClick={user ? signOut : () => setIsLoginOpen(true)}
-                        className={clsx(
-                            "relative flex flex-col items-center justify-center w-full h-full space-y-1 transition-all duration-300",
-                            user ? "text-red-400" : "text-green-400",
-                            "tap-highlight rounded-xl"
-                        )}
-                    >
-                        <div className="transition-transform duration-300">
-                            {user ? <LogOut size={24} /> : <LogIn size={24} />}
-                        </div>
-                        <span className="text-[10px] font-medium tracking-wide opacity-80">
-                            {user ? 'Salir' : 'Entrar'}
-                        </span>
-                    </button>
+                    {user ? (
+                        <button
+                            onClick={signOut}
+                            className="relative flex flex-col items-center justify-center w-full h-full space-y-1 transition-all duration-300 text-red-400 tap-highlight rounded-xl"
+                        >
+                            <div className="transition-transform duration-300">
+                                <LogOut size={24} />
+                            </div>
+                            <span className="text-[10px] font-medium tracking-wide opacity-80">Salir</span>
+                        </button>
+                    ) : (
+                        <Link
+                            href="/login"
+                            className="relative flex flex-col items-center justify-center w-full h-full space-y-1 transition-all duration-300 text-green-400 tap-highlight rounded-xl"
+                        >
+                            <div className="transition-transform duration-300">
+                                <LogIn size={24} />
+                            </div>
+                            <span className="text-[10px] font-medium tracking-wide opacity-80">Entrar</span>
+                        </Link>
+                    )}
                 </div>
             </nav>
 
@@ -119,19 +125,17 @@ export default function Navigation() {
                                 </button>
                             </div>
                         ) : (
-                            <button
-                                onClick={() => setIsLoginOpen(true)}
+                            <Link
+                                href="/login"
                                 className="flex items-center gap-2 px-6 py-2 rounded-full bg-slate-100 text-slate-900 hover:bg-white transition-colors font-bold shadow-[0_0_15px_rgba(255,255,255,0.2)]"
                             >
                                 <LogIn size={16} />
                                 <span>Entrar</span>
-                            </button>
+                            </Link>
                         )}
                     </div>
                 </div>
             </header>
-
-            {isLoginOpen && <LoginModal onClose={() => setIsLoginOpen(false)} />}
         </>
     );
 }
