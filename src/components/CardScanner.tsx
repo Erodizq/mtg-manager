@@ -316,6 +316,20 @@ export default function CardScanner() {
 
                     {/* Status Message */}
                     {statusMessage || "Procesando..."}
+
+                    {/* Critical Debug Info for User */}
+                    {statusMessage.includes("Error") && (
+                        <div className="mt-2 pt-2 border-t border-red-800 text-[10px] font-mono opacity-80 text-left">
+                            <p>Build Version: v4-Check</p>
+                            <p>Key Loaded: {process.env.NEXT_PUBLIC_GEMINI_API_KEY ?
+                                `Yes (${process.env.NEXT_PUBLIC_GEMINI_API_KEY.substring(0, 5)}...)` :
+                                "NO KEY FOUND"}
+                            </p>
+                            <button onClick={() => window.location.reload()} className="mt-1 underline">
+                                Recargar página (Clear Cache)
+                            </button>
+                        </div>
+                    )}
                 </div>
             )}
 
