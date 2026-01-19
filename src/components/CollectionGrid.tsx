@@ -1,5 +1,6 @@
 import { useCollection, ScryfallCard } from "@/lib/storage";
-import { Trash2, Plus, Layers, Search, ArrowUpDown, LayoutGrid, List as ListIcon, Filter, X } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
+import { Trash2, Plus, Layers, Search, ArrowUpDown, LayoutGrid, List as ListIcon, Filter, X, LogIn } from "lucide-react";
 import Link from 'next/link';
 import { useState, useMemo } from "react";
 import AddToDeckModal from "./AddToDeckModal";
@@ -124,12 +125,19 @@ export default function CollectionGrid() {
             <div className="flex flex-col items-center justify-center py-16 px-4 text-center glass-panel rounded-2xl">
                 <div className="text-5xl mb-6 opacity-80">📭</div>
                 <h3 className="text-xl font-bold text-slate-200 mb-2">Tu Colección está vacía</h3>
-                <p className="text-slate-400 mb-8 max-w-sm">
+                <p className="text-slate-400 mb-6 max-w-sm">
                     Empieza escaneando cartas o buscando manualmente para llenar tu carpeta digital.
                 </p>
-                <Link href="/scan" className="btn-primary">
-                    Empezar a Escanear
-                </Link>
+                <div className="flex flex-col sm:flex-row gap-3">
+                    <Link href="/scan" className="btn-primary flex items-center gap-2">
+                        <Plus size={18} /> Empezar a Escanear
+                    </Link>
+                    {!useAuth().user && (
+                        <Link href="/login" className="px-6 py-2 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-300 hover:bg-blue-500/20 transition-all font-medium flex items-center gap-2">
+                            <LogIn size={18} /> Iniciar Sesión para Sincronizar
+                        </Link>
+                    )}
+                </div>
             </div>
         );
     }
