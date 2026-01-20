@@ -77,25 +77,17 @@ export default function Navigation() {
 
             {/* Desktop Header Navigation */}
             <header className="hidden md:block fixed top-0 left-0 right-0 z-50 glass-nav border-b border-white/5 shadow-lg shadow-black/20 text-slate-100">
-                <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+                <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                     {/* Logo and App Name */}
-                    <Link href="/" className="flex items-center gap-3 hover:opacity-90 transition-opacity">
-                        <div className="relative w-10 h-10 flex items-center justify-center">
+                    <Link href="/" className="flex items-center group">
+                        <div className="relative h-16 w-52 flex items-center justify-center">
                             <Image
-                                src="/mtg-pro-logo.png"
+                                src="/mtg-manager-logo-v2.png"
                                 alt="MTG Manager"
-                                width={40}
-                                height={40}
-                                className="object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]"
+                                fill
+                                className="object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] transition-all duration-300 group-hover:drop-shadow-[0_0_25px_rgba(255,255,255,0.3)] group-hover:scale-105"
+                                priority
                             />
-                        </div>
-                        <div className="flex flex-col">
-                            <span className="text-lg font-extrabold tracking-tight leading-none bg-gradient-to-r from-white via-white to-slate-400 bg-clip-text text-transparent">
-                                MTG MANAGER
-                            </span>
-                            <span className="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-bold ml-0.5">
-                                Collection Pro
-                            </span>
                         </div>
                     </Link>
 
