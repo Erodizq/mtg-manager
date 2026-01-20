@@ -30,19 +30,19 @@ export default function Navigation() {
                                 href={item.href}
                                 className={clsx(
                                     "relative flex flex-col items-center justify-center w-full h-full space-y-1 transition-all duration-300",
-                                    isActive ? "text-blue-400" : "text-slate-500 hover:text-slate-300",
+                                    isActive ? "text-primary" : "text-slate-500 hover:text-slate-300",
                                     "tap-highlight rounded-xl"
                                 )}
                             >
                                 {/* Active Indicator Glow */}
                                 {isActive && (
-                                    <div className="absolute top-0 w-8 h-1 bg-blue-500 rounded-b-full shadow-[0_0_10px_#3b82f6]"></div>
+                                    <div className="absolute top-0 w-8 h-1 rounded-b-full" style={{ backgroundColor: 'var(--color-primary)', boxShadow: '0 0 10px var(--color-glow)' }}></div>
                                 )}
 
                                 <div className={clsx("transition-transform duration-300", isActive && "scale-110")}>
                                     <item.icon size={24} strokeWidth={isActive ? 2.5 : 2} />
                                 </div>
-                                <span className={clsx("text-[10px] font-medium tracking-wide", isActive ? "text-blue-300" : "opacity-80")}>
+                                <span className={clsx("text-[10px] font-medium tracking-wide", isActive ? "text-accent" : "opacity-80")}>
                                     {item.name}
                                 </span>
                             </Link>
@@ -97,9 +97,13 @@ export default function Navigation() {
                                         className={clsx(
                                             "flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300 border border-transparent",
                                             isActive
-                                                ? "bg-blue-500/10 text-blue-300 border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.1)]"
+                                                ? "text-accent border-primary/20"
                                                 : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
                                         )}
+                                        style={isActive ? {
+                                            backgroundColor: 'var(--color-primary-light)' + '1A',
+                                            boxShadow: '0 0 15px var(--color-glow)'
+                                        } : undefined}
                                     >
                                         <item.icon size={18} />
                                         <span className="font-medium text-sm">{item.name}</span>

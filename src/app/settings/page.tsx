@@ -3,13 +3,14 @@
 import { useTheme, ManaColor } from '@/lib/theme-context';
 import { Palette, Check } from 'lucide-react';
 import clsx from 'clsx';
+import ManaIcon from '@/components/ManaIcon';
 
-const colorOptions: { id: ManaColor; name: string; icon: string; description: string }[] = [
-    { id: 'white', name: 'Blanco', icon: '☀️', description: 'Orden y luz' },
-    { id: 'blue', name: 'Azul', icon: '💧', description: 'Conocimiento y control' },
-    { id: 'black', name: 'Negro', icon: '💀', description: 'Poder y ambición' },
-    { id: 'red', name: 'Rojo', icon: '🔥', description: 'Pasión y caos' },
-    { id: 'green', name: 'Verde', icon: '🌿', description: 'Naturaleza y crecimiento' },
+const colorOptions: { id: ManaColor; name: string; description: string }[] = [
+    { id: 'white', name: 'Blanco', description: 'Orden y luz' },
+    { id: 'blue', name: 'Azul', description: 'Conocimiento y control' },
+    { id: 'black', name: 'Negro', description: 'Poder y ambición' },
+    { id: 'red', name: 'Rojo', description: 'Pasión y caos' },
+    { id: 'green', name: 'Verde', description: 'Naturaleza y crecimiento' },
 ];
 
 export default function SettingsPage() {
@@ -24,7 +25,12 @@ export default function SettingsPage() {
                         <Palette className="text-white" size={24} />
                     </div>
                     <div>
-                        <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                        <h1 className="text-3xl font-bold mb-0" style={{
+                            background: 'linear-gradient(to right, var(--color-primary-light), var(--color-accent))',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                            backgroundClip: 'text'
+                        }}>
                             Configuración
                         </h1>
                         <p className="text-slate-400 text-sm">Personaliza tu experiencia</p>
@@ -58,7 +64,9 @@ export default function SettingsPage() {
                                 >
                                     <div className="flex items-start justify-between">
                                         <div className="flex items-center gap-3">
-                                            <div className="text-3xl">{option.icon}</div>
+                                            <div className="w-12 h-12 flex items-center justify-center">
+                                                <ManaIcon color={option.id} size={48} />
+                                            </div>
                                             <div>
                                                 <div className="font-bold text-white">{option.name}</div>
                                                 <div className="text-xs text-slate-400">{option.description}</div>
