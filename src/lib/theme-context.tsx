@@ -10,6 +10,8 @@ export interface ThemeColors {
     primaryDark: string;
     accent: string;
     glow: string;
+    bgGradientStart: string;
+    bgGradientEnd: string;
 }
 
 const colorThemes: Record<ManaColor, ThemeColors> = {
@@ -19,6 +21,8 @@ const colorThemes: Record<ManaColor, ThemeColors> = {
         primaryDark: '#2563eb',  // blue-600
         accent: '#93c5fd',       // blue-300
         glow: 'rgba(59, 130, 246, 0.3)',
+        bgGradientStart: '#1e3a8a', // blue-900
+        bgGradientEnd: '#020617',   // slate-950
     },
     white: {
         primary: '#f59e0b',      // amber-500 (gold for white mana)
@@ -26,6 +30,8 @@ const colorThemes: Record<ManaColor, ThemeColors> = {
         primaryDark: '#d97706',  // amber-600
         accent: '#fcd34d',       // amber-300
         glow: 'rgba(245, 158, 11, 0.3)',
+        bgGradientStart: '#78350f', // amber-900
+        bgGradientEnd: '#020617',
     },
     black: {
         primary: '#8b5cf6',      // violet-500 (purple for black mana)
@@ -33,6 +39,8 @@ const colorThemes: Record<ManaColor, ThemeColors> = {
         primaryDark: '#7c3aed',  // violet-600
         accent: '#c4b5fd',       // violet-300
         glow: 'rgba(139, 92, 246, 0.3)',
+        bgGradientStart: '#4c1d95', // violet-900
+        bgGradientEnd: '#0a0a0a',   // deeper black
     },
     red: {
         primary: '#ef4444',      // red-500
@@ -40,6 +48,8 @@ const colorThemes: Record<ManaColor, ThemeColors> = {
         primaryDark: '#dc2626',  // red-600
         accent: '#fca5a5',       // red-300
         glow: 'rgba(239, 68, 68, 0.3)',
+        bgGradientStart: '#7f1d1d', // red-900
+        bgGradientEnd: '#020617',
     },
     green: {
         primary: '#10b981',      // emerald-500
@@ -47,6 +57,8 @@ const colorThemes: Record<ManaColor, ThemeColors> = {
         primaryDark: '#059669',  // emerald-600
         accent: '#6ee7b7',       // emerald-300
         glow: 'rgba(16, 185, 129, 0.3)',
+        bgGradientStart: '#064e3b', // emerald-900
+        bgGradientEnd: '#020617',
     },
 };
 
@@ -90,6 +102,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         document.documentElement.style.setProperty('--color-primary-dark', theme.primaryDark);
         document.documentElement.style.setProperty('--color-accent', theme.accent);
         document.documentElement.style.setProperty('--color-glow', theme.glow);
+        document.documentElement.style.setProperty('--bg-gradient-start', theme.bgGradientStart);
+        document.documentElement.style.setProperty('--bg-gradient-end', theme.bgGradientEnd);
     }, [color]);
 
     return (

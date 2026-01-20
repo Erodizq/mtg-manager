@@ -4,6 +4,7 @@ import "./globals.css";
 import Navigation from "@/components/layout/Navigation";
 import { AuthProvider } from "@/lib/auth-context";
 import { ThemeProvider } from "@/lib/theme-context";
+import ThemedBackground from "@/components/ThemedBackground";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -38,7 +39,8 @@ export default function RootLayout({
       <body className={inter.className}>
         <AuthProvider>
           <ThemeProvider>
-            <div className="min-h-screen text-slate-100 pb-20 md:pb-0">
+            <ThemedBackground />
+            <div className="min-h-screen text-slate-100 pb-20 md:pb-0 relative">
               <Navigation />
               <main className="container mx-auto">
                 {children}
