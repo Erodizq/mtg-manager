@@ -76,16 +76,29 @@ export default function Navigation() {
             </nav>
 
             {/* Desktop Header Navigation */}
-            <header className="hidden md:block fixed top-0 left-0 right-0 z-50 bg-slate-950/50 backdrop-blur-xl border-b border-white/10">
-                <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center font-bold text-white text-lg shadow-lg shadow-blue-500/20">
-                            M
+            <header className="hidden md:block fixed top-0 left-0 right-0 z-50 glass-nav border-b border-white/10">
+                <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+                    {/* Logo and App Name */}
+                    <Link href="/" className="flex items-center gap-4 group">
+                        <div className="relative w-16 h-16 flex items-center justify-center">
+                            <img
+                                src="/mtg-manager-logo.jpg"
+                                alt="MTG Manager"
+                                className="w-full h-full object-contain drop-shadow-[0_0_15px_var(--color-glow)] transition-all duration-300 group-hover:drop-shadow-[0_0_25px_var(--color-glow)] group-hover:scale-105"
+                            />
                         </div>
-                        <div className="text-xl font-bold bg-gradient-to-r from-blue-200 to-blue-400 bg-clip-text text-transparent">
-                            MTG Manager
+                        <div>
+                            <h1 className="text-2xl font-bold tracking-tight" style={{
+                                background: 'linear-gradient(135deg, var(--color-primary-light), var(--color-accent))',
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent',
+                                backgroundClip: 'text'
+                            }}>
+                                MTG Manager
+                            </h1>
+                            <p className="text-xs text-slate-400 tracking-wide">Tu colección de Magic</p>
                         </div>
-                    </div>
+                    </Link>
 
                     <div className="flex gap-4 items-center">
                         <div className="flex gap-2">
