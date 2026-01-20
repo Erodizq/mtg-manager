@@ -11,6 +11,7 @@ export interface CollectionItem {
     card: ScryfallCard;
     quantity: number;
     addedAt: number;
+    isFoil?: boolean; // Track if the card is foil for pricing
 }
 
 export interface Deck {
@@ -42,7 +43,8 @@ export function useCollection() {
                         const parsedCollection = dbCollection.map(item => ({
                             card: item.card_data, // Mapped from JSONB
                             quantity: item.quantity,
-                            addedAt: item.added_at
+                            addedAt: item.added_at,
+                            isFoil: item.is_foil || false
                         }));
                         setCollection(parsedCollection);
                     }
@@ -174,6 +176,30 @@ export function useCollection() {
         }
     };
 
+    // ACTION: Toggle Foil Status
+    const toggleFoil = async (cardId: string) => {
+        const newCollection = collection.map(item => {
+            if (item.card.id === cardId) {
+                return { ...item, isFoil: !item.isFoil };
+            }
+            return item;
+        });
+        setCollection(newCollection);
+
+        if (user) {
+            const item = newCollection.find(i => i.card.id === cardId);
+            if (item) {
+                await supabase
+                    .from('collection')
+                    .update({ is_foil: item.isFoil || false })
+                    .eq('user_id', user.id)
+                    .eq('card_id', cardId);
+            }
+        } else {
+            localStorage.setItem('mtg-collection', JSON.stringify(newCollection));
+        }
+    };
+
     // ACTION: Create Deck
     const createDeck = async (name: string) => {
         const newDeck: Deck = { id: crypto.randomUUID(), name, cards: [], createdAt: Date.now() };
@@ -236,5 +262,5 @@ export function useCollection() {
         }
     };
 
-    return { collection, decks, isLoaded, addToCollection, removeFromCollection, createDeck, addCardToDeck };
+    return { collection, decks, isLoaded, addToCollection, removeFromCollection, toggleFoil, createDeck, addCardToDeck };
 }

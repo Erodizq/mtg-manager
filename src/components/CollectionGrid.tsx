@@ -19,7 +19,7 @@ const COLORS = [
 ];
 
 export default function CollectionGrid() {
-    const { collection, removeFromCollection, isLoaded, addToCollection } = useCollection();
+    const { collection, removeFromCollection, toggleFoil, isLoaded, addToCollection } = useCollection();
     const [deckModalCard, setDeckModalCard] = useState<ScryfallCard | null>(null);
     const [detailModalCard, setDetailModalCard] = useState<ScryfallCard | null>(null);
 
@@ -335,11 +335,27 @@ export default function CollectionGrid() {
                                             <h4 className="font-bold text-sm text-slate-100 line-clamp-1 leading-tight">{item.card.printed_name || item.card.name}</h4>
                                             <div className="text-[10px] text-slate-400 flex justify-between mt-1 items-center">
                                                 <span className="uppercase tracking-wider opacity-70">{item.card.set_name.substring(0, 3)}</span>
-                                                <span className="text-emerald-400 font-mono font-bold text-xs">${item.card.prices.usd || '-'}</span>
+                                                <span className={clsx("font-mono font-bold text-xs", item.isFoil ? "text-amber-400" : "text-emerald-400")}>
+                                                    ${item.isFoil ? (item.card.prices.usd_foil || '-') : (item.card.prices.usd || '-')}
+                                                    {item.isFoil && <span className="ml-1">✨</span>}
+                                                </span>
                                             </div>
                                         </div>
 
                                         <div className="flex justify-between items-center pt-2 border-t border-white/5 gap-2 relative z-10">
+                                            <button
+                                                onClick={() => toggleFoil(item.card.id)}
+                                                className={clsx(
+                                                    "p-2 rounded-lg transition-all flex-1 flex justify-center text-xs font-bold",
+                                                    item.isFoil
+                                                        ? "bg-amber-500/20 text-amber-300 hover:bg-amber-500/30"
+                                                        : "text-slate-400 hover:text-white hover:bg-slate-700/50"
+                                                )}
+                                                title={item.isFoil ? "Marcar como normal" : "Marcar como foil"}
+                                            >
+                                                {item.isFoil ? "✨" : "○"}
+                                            </button>
+                                            <div className="w-px h-4 bg-white/10" />
                                             <button
                                                 onClick={() => setDeckModalCard(item.card)}
                                                 className="p-2 text-purple-300 hover:text-white hover:bg-purple-500/20 rounded-lg transition-colors flex-1 flex justify-center"
