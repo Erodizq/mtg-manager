@@ -32,9 +32,8 @@ export async function searchCard(query: string): Promise<ScryfallCard[]> {
         const term = encodeURIComponent(query);
 
         // Use unique=prints to get all printings
-        // Note: We removed include_multilingual because it conflicts with advanced syntax like set:AFR cn:325
-        // Advanced syntax already handles language selection properly
-        const response = await fetch(`${SCRYFALL_API_BASE}/cards/search?q=${term}&unique=prints`);
+        // Added include_multilingual=true to support searching by Spanish/localized names
+        const response = await fetch(`${SCRYFALL_API_BASE}/cards/search?q=${term}&unique=prints&include_multilingual=true`);
 
         if (!response.ok) {
             if (response.status === 404) return [];
