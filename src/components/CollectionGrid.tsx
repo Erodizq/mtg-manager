@@ -400,13 +400,26 @@ export default function CollectionGrid() {
                                             <span className="uppercase bg-slate-800 px-1.5 rounded text-[10px]">{item.card.set_name.substring(0, 3)}</span>
                                             <span>{item.card.type_line.split('—')[0].trim()}</span>
                                         </div>
-                                        <div className="mt-1 font-mono text-emerald-400 font-bold text-xs">
-                                            ${item.card.prices.usd || '-'}
+                                        <div className={clsx("mt-1 font-mono font-bold text-xs flex items-center gap-1", item.isFoil ? "text-amber-400" : "text-emerald-400")}>
+                                            ${item.isFoil ? (item.card.prices.usd_foil || '-') : (item.card.prices.usd || '-')}
+                                            {item.isFoil && <span>✨</span>}
                                         </div>
                                     </div>
 
                                     {/* Actions */}
                                     <div className="flex flex-col items-end gap-1">
+                                        <button
+                                            onClick={() => toggleFoil(item.card.id)}
+                                            className={clsx(
+                                                "px-3 py-1 rounded-lg transition-all text-xs font-bold mb-1",
+                                                item.isFoil
+                                                    ? "bg-amber-500/20 text-amber-300 hover:bg-amber-500/30"
+                                                    : "bg-slate-700/50 text-slate-400 hover:text-white hover:bg-slate-700"
+                                            )}
+                                            title={item.isFoil ? "Marcar como normal" : "Marcar como foil"}
+                                        >
+                                            {item.isFoil ? "✨ Foil" : "Normal"}
+                                        </button>
                                         <div className="flex items-center bg-slate-950/50 rounded-lg border border-slate-700/50 overflow-hidden">
                                             <button
                                                 onClick={() => removeFromCollection(item.card.id)}
