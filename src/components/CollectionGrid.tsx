@@ -145,7 +145,9 @@ export default function CollectionGrid() {
     // Stats
     const totalCards = collection.reduce((acc, item) => acc + item.quantity, 0);
     const totalValue = processedCollection.reduce((acc, item) => {
-        const price = parseFloat(item.card.prices.usd || "0");
+        const price = item.isFoil
+            ? parseFloat(item.card.prices.usd_foil || "0")
+            : parseFloat(item.card.prices.usd || "0");
         return acc + (price * item.quantity);
     }, 0);
 
