@@ -340,6 +340,7 @@ export default function CollectionGrid() {
                                                 <span className={clsx("font-mono font-bold text-xs", item.isFoil ? "text-amber-400" : "text-emerald-400")}>
                                                     ${item.isFoil ? (item.card.prices.usd_foil || '-') : (item.card.prices.usd || '-')}
                                                     {item.isFoil && <span className="ml-1">✨</span>}
+                                                    {item.quantity > 1 && <span className="ml-1 text-[10px] opacity-60 font-sans">c/u</span>}
                                                 </span>
                                             </div>
                                         </div>
@@ -405,6 +406,7 @@ export default function CollectionGrid() {
                                         <div className={clsx("mt-1 font-mono font-bold text-xs flex items-center gap-1", item.isFoil ? "text-amber-400" : "text-emerald-400")}>
                                             ${item.isFoil ? (item.card.prices.usd_foil || '-') : (item.card.prices.usd || '-')}
                                             {item.isFoil && <span>✨</span>}
+                                            {item.quantity > 1 && <span className="ml-1 text-[10px] opacity-60 font-sans">c/u</span>}
                                         </div>
                                     </div>
 
