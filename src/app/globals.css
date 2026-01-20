@@ -68,6 +68,8 @@
   --color-primary-dark: #2563eb;
   --color-accent: #93c5fd;
   --color-glow: rgba(59, 130, 246, 0.3);
+  --bg-gradient-start: #1e3a8a;
+  --bg-gradient-end: #020617;
 }
 
 body {

@@ -92,6 +92,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         document.documentElement.style.setProperty('--color-primary-dark', theme.primaryDark);
         document.documentElement.style.setProperty('--color-accent', theme.accent);
         document.documentElement.style.setProperty('--color-glow', theme.glow);
+        document.documentElement.style.setProperty('--bg-gradient-start', theme.bgGradientStart);
+        document.documentElement.style.setProperty('--bg-gradient-end', theme.bgGradientEnd);
     };
 
     // Apply theme on mount
