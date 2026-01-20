@@ -92,16 +92,6 @@ export default function CardDetailModal({ card, onClose }: CardDetailModalProps)
                                     </div>
                                 </div>
                             </div>
-
-                            {/* Scryfall Link */}
-                            <a
-                                href={card.scryfall_uri}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="block w-full mt-4 py-3 px-4 bg-primary/20 hover:bg-primary/30 text-primary border border-primary/30 rounded-lg text-center font-medium transition-all"
-                            >
-                                Ver en Scryfall →
-                            </a>
                         </div>
                     </div>
                 </div>
