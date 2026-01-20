@@ -1,6 +1,7 @@
 "use client";
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Home, Camera, Layers, Settings, LogIn, LogOut, User as UserIcon } from 'lucide-react';
 import clsx from 'clsx';
